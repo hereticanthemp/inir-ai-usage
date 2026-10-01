@@ -1,6 +1,6 @@
 # iNiR AI Usage
 
-An AI subscription quota widget for iNiR 2.31.x on Linux. It adds a compact
+An AI subscription quota widget for iNiR 2.31.x and 2.32.x on Linux. It adds a compact
 reading to the iNiR bar and a detailed card below the CPU/RAM status rings in
 the left Widgets panel.
 
@@ -21,7 +21,7 @@ refreshes immediately. The normal polling interval is five minutes.
 
 ## Requirements
 
-- iNiR 2.31.x
+- iNiR 2.31.x or 2.32.x
 - Quickshell
 - `ai-usagebar` on `PATH`
 - `python3` and `rg`
@@ -101,7 +101,7 @@ inir-ai-usage/
 │   ├── AiUsageBar.qml
 │   └── AiUsageCard.qml
 ├── patches/
-│   └── inir-2.31.patch
+│   └── inir-2.31-2.32.patch
 ├── docs/
 │   └── INIR-INTEGRATION.md
 ├── scripts/
@@ -115,7 +115,7 @@ inir-ai-usage/
 
 ## Update compatibility
 
-iNiR 2.31 does not expose a general custom-module hook for this ii bar and
+iNiR 2.31–2.32 does not expose a general custom-module hook for this ii bar and
 Widgets status stack, so two small upstream files are patched. An iNiR update
 may change those insertion points. The installer stops on unsupported versions
 instead of guessing.
@@ -127,7 +127,7 @@ and Widgets panel, removing the need for this compatibility patch.
 
 - Backend: [`akitaonrails/ai-usagebar`](https://github.com/akitaonrails/ai-usagebar)
 - UI and polling behavior informed by Noctalia's community AI Usage integration
-- Shell integration targets iNiR 2.31.x
+- Shell integration targets iNiR 2.31.x and 2.32.x
 
 This repository contains only the iNiR integration. It does not vendor or
 redistribute the `ai-usagebar` binary.

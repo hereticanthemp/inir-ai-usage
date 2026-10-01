@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add compatibility with iNiR 2.32.x.
+- Store safety backups under a version-specific directory.
+
 ## 0.1.0 - 2026-10-01
 
 - Add a compact iNiR bar quota reading.

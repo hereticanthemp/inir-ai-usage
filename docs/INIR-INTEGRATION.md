@@ -11,7 +11,7 @@ This placement is a deliberate project requirement and should be preserved.
 
 ## Why this is not a standard custom widget
 
-iNiR 2.31 discovers standard custom widgets from
+iNiR 2.31–2.32 discovers standard custom widgets from
 `~/.config/inir/widgets/<id>/widget.json`. Its public Custom Widget SDK supports
 desktop widgets. A manifest may also expose an `iris` component for an iRiS bar
 slot.
@@ -40,7 +40,7 @@ It also adds the `aiUsage` module to `~/.config/inir/config.json`. The widget's
 own QML remains under `~/.config/inir/widgets/ai-usage/`, outside the iNiR source
 tree.
 
-The exact source changes are recorded in `patches/inir-2.31.patch`.
+The exact source changes are recorded in `patches/inir-2.31-2.32.patch`.
 
 ## Effect of an iNiR update
 
@@ -72,4 +72,3 @@ Backups of the original integration files are stored under:
 The patch can be removed only after iNiR exposes public custom-widget slots for
 the ii bar and the left Widgets panel. Until then, keeping the current placement
 and using only the standard Custom Widget SDK are mutually incompatible.
-

@@ -6,7 +6,6 @@ config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
 inir_root=${INIR_ROOT:-"$config_home/quickshell/inir"}
 inir_config=${INIR_CONFIG:-"$config_home/inir/config.json"}
 widget_dir="$config_home/inir/widgets/ai-usage"
-backup_dir="$config_home/inir/.inir-ai-usage-backup"
 restart=true
 
 if [[ ${1:-} == "--no-restart" ]]; then restart=false; fi
@@ -20,10 +19,11 @@ done
 
 [[ -f "$inir_root/VERSION" ]] || { printf 'iNiR not found at %s\n' "$inir_root" >&2; exit 1; }
 inir_version=$(<"$inir_root/VERSION")
-[[ $inir_version == 2.31.* ]] || {
-    printf 'This patch targets iNiR 2.31.x; found %s. Review the patch before continuing.\n' "$inir_version" >&2
+[[ $inir_version == 2.31.* || $inir_version == 2.32.* ]] || {
+    printf 'This patch targets iNiR 2.31.x and 2.32.x; found %s. Review the patch before continuing.\n' "$inir_version" >&2
     exit 1
 }
+backup_dir="$config_home/inir/.inir-ai-usage-backup/$inir_version"
 
 mkdir -p "$widget_dir" "$backup_dir/modules/bar" "$backup_dir/modules/sidebarLeft/widgets"
 for relative_path in modules/bar/BarContent.qml modules/sidebarLeft/widgets/DraggableWidgetContainer.qml; do
