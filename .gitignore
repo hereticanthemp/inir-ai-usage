@@ -1,0 +1,7 @@
+*.log
+*.json
+*.toml
+*.token
+auth.json
+credentials.json
+.DS_Store

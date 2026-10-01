@@ -1,0 +1,42 @@
+--- a/modules/bar/BarContent.qml
++++ b/modules/bar/BarContent.qml
+@@ -527,6 +527,7 @@
+         "rightSidebarButton": rightSidebarButtonComponent,
+         "tray": trayComponent,
+         "timer": timerComponent,
++        "aiUsage": aiUsageComponent,
+         "shellUpdate": shellUpdateComponent,
+         "weather": weatherComponent,
+         "spacer": spacerComponent,
+@@ -1553,6 +1554,13 @@
+     // edge. `spacer` is a flexible gap.
+     Component { id: timerComponent; TimerIndicator { Layout.alignment: Qt.AlignVCenter } }
++    Component {
++        id: aiUsageComponent
++        Loader {
++            source: Directories.configPath + "/inir/widgets/ai-usage/AiUsageBar.qml"
++            Layout.alignment: Qt.AlignVCenter
++        }
++    }
+     Component { id: shellUpdateComponent; ShellUpdateIndicator { Layout.alignment: Qt.AlignVCenter } }
+     Component {
+         id: spacerComponent
+--- a/modules/sidebarLeft/widgets/DraggableWidgetContainer.qml
++++ b/modules/sidebarLeft/widgets/DraggableWidgetContainer.qml
+@@ -618,7 +618,15 @@
+     }
+     Component {
+         id: statusWidget
+-        StatusRings {}
++        ColumnLayout {
++            spacing: root.widgetSpacing
++            StatusRings { Layout.fillWidth: true }
++            Loader {
++                Layout.fillWidth: true
++                Layout.preferredHeight: item?.implicitHeight ?? 0
++                source: Directories.configPath + "/inir/widgets/ai-usage/AiUsageCard.qml"
++            }
++        }
+     }
+     Component {
+         id: cryptoWidget
