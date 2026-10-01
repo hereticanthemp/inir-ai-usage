@@ -50,6 +50,10 @@ QML under `~/.config/inir/widgets/ai-usage`, adds both integration points,
 updates the bar layout without reformatting its JSON, and restarts an active
 `inir.service`.
 
+This is an ii integration rather than a manifest-discovered desktop widget.
+See [iNiR integration and update compatibility](docs/INIR-INTEGRATION.md) for
+the reason, the files affected by updates, and the recovery procedure.
+
 Use `--no-restart` to apply the files without restarting the shell:
 
 ```bash
@@ -98,11 +102,13 @@ inir-ai-usage/
 │   └── AiUsageCard.qml
 ├── patches/
 │   └── inir-2.31.patch
+├── docs/
+│   └── INIR-INTEGRATION.md
 ├── scripts/
 │   ├── install.sh
 │   └── uninstall.sh
 ├── .gitignore
-+├── CHANGELOG.md
+├── CHANGELOG.md
 ├── LICENSE
 └── README.md
 ```
