@@ -15,7 +15,10 @@ MouseArea {
     property int clockTick: 0
 
     readonly property var entries: (report.entries ?? []).filter(e => e.status === "ready" || (e.metrics ?? []).length > 0)
-    readonly property string preferredProvider: Config.options?.sidebar?.widgets?.aiUsageTopBarProvider ?? ""
+    readonly property string preferredProvider: {
+        Config.revision
+        return String(Config.getNestedValue("background.widgets.custom.ai-usage.topBarProvider", "") ?? "")
+    }
     readonly property var headlineEntry: {
         const candidates = preferredProvider.length > 0
             ? entries.filter(entry => (entry.id ?? entry.name) === preferredProvider)

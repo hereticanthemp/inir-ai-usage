@@ -5,6 +5,8 @@
 - Add compatibility with iNiR 2.32.x.
 - Store safety backups under a version-specific directory.
 - Add a provider selector to control which provider appears in the top bar.
+- Fix provider selection persistence by using iNiR's freeform custom-widget
+  configuration namespace, and make the selector collapsible.
 
 ## 0.1.0 - 2026-10-01
 

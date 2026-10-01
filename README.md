@@ -22,7 +22,8 @@ refreshes immediately. The normal polling interval is five minutes.
 The detailed card includes a **Top bar display** selector. Choose a provider to
 keep its highest-used quota window in the bar, or choose **Automatic** to show
 the highest percentage across all ready providers. The selection is saved in
-iNiR's configuration.
+iNiR's custom-widget configuration. The selector is collapsed by default and
+closes after a provider is selected.
 
 ## Requirements
 

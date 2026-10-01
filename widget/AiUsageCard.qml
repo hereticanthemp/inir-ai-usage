@@ -10,8 +10,17 @@ Rectangle {
     property string failure: ""
     property bool refreshing: false
     property int clockTick: 0
+    property bool selectorExpanded: false
     readonly property var entries: (report.entries ?? []).filter(e => e.status === "ready" || (e.metrics ?? []).length > 0)
-    readonly property string preferredProvider: Config.options?.sidebar?.widgets?.aiUsageTopBarProvider ?? ""
+    readonly property string preferredProvider: {
+        Config.revision
+        return String(Config.getNestedValue("background.widgets.custom.ai-usage.topBarProvider", "") ?? "")
+    }
+    readonly property string preferredProviderLabel: {
+        if (preferredProvider.length === 0) return "Automatic"
+        const entry = entries.find(candidate => (candidate.id ?? candidate.name) === preferredProvider)
+        return entry?.display_name ?? entry?.name ?? preferredProvider
+    }
 
     implicitHeight: content.implicitHeight + 24
     radius: Appearance.rounding.normal
@@ -41,7 +50,7 @@ Rectangle {
         reader.running = true
     }
     function selectTopBarProvider(providerId) {
-        Config.setNestedValue("sidebar.widgets.aiUsageTopBarProvider", providerId)
+        Config.setNestedValue("background.widgets.custom.ai-usage.topBarProvider", providerId)
     }
     Component.onCompleted: refresh()
     Timer { interval: 60000; repeat: true; running: true; onTriggered: root.clockTick++ }
@@ -95,35 +104,78 @@ Rectangle {
             Layout.fillWidth: true
             spacing: 4
 
-            StyledText {
-                text: "Top bar display"
-                font.pixelSize: Appearance.font.pixelSize.small
-                font.weight: Font.Medium
-                opacity: 0.72
-            }
-            Repeater {
-                model: [{ id: "", display_name: "Automatic (highest usage)" }].concat(root.entries)
-                delegate: RippleButton {
-                    id: providerButton
-                    required property var modelData
-                    Layout.fillWidth: true
-                    implicitHeight: 30
-                    buttonRadius: Appearance.rounding.small
-                    toggled: root.preferredProvider === (modelData.id ?? modelData.name ?? "")
-                    onClicked: root.selectTopBarProvider(modelData.id ?? modelData.name ?? "")
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: 34
+                radius: Appearance.rounding.small
+                color: selectorHover.hovered ? Appearance.colors.colLayer2Hover : Appearance.colors.colLayer1
 
-                    contentItem: RowLayout {
-                        spacing: 7
-                        MaterialSymbol {
-                            text: providerButton.toggled ? "radio_button_checked" : "radio_button_unchecked"
-                            iconSize: 17
-                            color: providerButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer2
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 9
+                    anchors.rightMargin: 9
+                    spacing: 7
+                    MaterialSymbol {
+                        text: "tune"
+                        iconSize: 17
+                        color: Appearance.colors.colPrimary
+                    }
+                    StyledText {
+                        text: "Top bar: " + root.preferredProviderLabel
+                        Layout.fillWidth: true
+                        font.pixelSize: Appearance.font.pixelSize.small
+                        font.weight: Font.Medium
+                    }
+                    MaterialSymbol {
+                        text: root.selectorExpanded ? "expand_less" : "expand_more"
+                        iconSize: 18
+                    }
+                }
+                HoverHandler { id: selectorHover }
+                TapHandler { onTapped: root.selectorExpanded = !root.selectorExpanded }
+            }
+
+            ColumnLayout {
+                visible: root.selectorExpanded
+                Layout.fillWidth: true
+                spacing: 3
+
+                Repeater {
+                    model: [{ id: "", display_name: "Automatic (highest usage)" }].concat(root.entries)
+                    delegate: Rectangle {
+                        id: providerRow
+                        required property var modelData
+                        readonly property string providerId: modelData.id ?? modelData.name ?? ""
+                        readonly property bool selected: root.preferredProvider === providerId
+                        Layout.fillWidth: true
+                        implicitHeight: 30
+                        radius: Appearance.rounding.small
+                        color: selected ? Appearance.colors.colSecondaryContainer
+                            : providerHover.hovered ? Appearance.colors.colLayer2Hover : "transparent"
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 9
+                            anchors.rightMargin: 9
+                            spacing: 7
+                            MaterialSymbol {
+                                text: providerRow.selected ? "radio_button_checked" : "radio_button_unchecked"
+                                iconSize: 17
+                                color: providerRow.selected ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer2
+                            }
+                            StyledText {
+                                Layout.fillWidth: true
+                                text: providerRow.modelData.display_name ?? providerRow.modelData.name
+                                font.pixelSize: Appearance.font.pixelSize.small
+                                color: Appearance.colors.colOnLayer2
+                            }
                         }
-                        StyledText {
-                            Layout.fillWidth: true
-                            text: providerButton.modelData.display_name ?? providerButton.modelData.name
-                            font.pixelSize: Appearance.font.pixelSize.small
-                            color: Appearance.colors.colOnLayer2
+                        HoverHandler { id: providerHover }
+                        TapHandler {
+                            onTapped: {
+                                root.selectTopBarProvider(providerRow.providerId)
+                                root.selectorExpanded = false
+                            }
                         }
                     }
                 }
