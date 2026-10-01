@@ -19,6 +19,11 @@ DeepSeek, MiniMax and other providers.
 Left-clicking the bar reading opens iNiR's left Widgets panel. Right-clicking
 refreshes immediately. The normal polling interval is five minutes.
 
+The detailed card includes a **Top bar display** selector. Choose a provider to
+keep its highest-used quota window in the bar, or choose **Automatic** to show
+the highest percentage across all ready providers. The selection is saved in
+iNiR's configuration.
+
 ## Requirements
 
 - iNiR 2.31.x or 2.32.x

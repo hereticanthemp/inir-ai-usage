@@ -11,6 +11,7 @@ Rectangle {
     property bool refreshing: false
     property int clockTick: 0
     readonly property var entries: (report.entries ?? []).filter(e => e.status === "ready" || (e.metrics ?? []).length > 0)
+    readonly property string preferredProvider: Config.options?.sidebar?.widgets?.aiUsageTopBarProvider ?? ""
 
     implicitHeight: content.implicitHeight + 24
     radius: Appearance.rounding.normal
@@ -38,6 +39,9 @@ Rectangle {
         if (refreshing) return
         refreshing = true
         reader.running = true
+    }
+    function selectTopBarProvider(providerId) {
+        Config.setNestedValue("sidebar.widgets.aiUsageTopBarProvider", providerId)
     }
     Component.onCompleted: refresh()
     Timer { interval: 60000; repeat: true; running: true; onTriggered: root.clockTick++ }
@@ -85,6 +89,45 @@ Rectangle {
             visible: root.entries.length === 0 && !root.failure
             text: root.refreshing ? "Refreshing…" : "No quota data"
             opacity: 0.65
+        }
+        ColumnLayout {
+            visible: root.entries.length > 0
+            Layout.fillWidth: true
+            spacing: 4
+
+            StyledText {
+                text: "Top bar display"
+                font.pixelSize: Appearance.font.pixelSize.small
+                font.weight: Font.Medium
+                opacity: 0.72
+            }
+            Repeater {
+                model: [{ id: "", display_name: "Automatic (highest usage)" }].concat(root.entries)
+                delegate: RippleButton {
+                    id: providerButton
+                    required property var modelData
+                    Layout.fillWidth: true
+                    implicitHeight: 30
+                    buttonRadius: Appearance.rounding.small
+                    toggled: root.preferredProvider === (modelData.id ?? modelData.name ?? "")
+                    onClicked: root.selectTopBarProvider(modelData.id ?? modelData.name ?? "")
+
+                    contentItem: RowLayout {
+                        spacing: 7
+                        MaterialSymbol {
+                            text: providerButton.toggled ? "radio_button_checked" : "radio_button_unchecked"
+                            iconSize: 17
+                            color: providerButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer2
+                        }
+                        StyledText {
+                            Layout.fillWidth: true
+                            text: providerButton.modelData.display_name ?? providerButton.modelData.name
+                            font.pixelSize: Appearance.font.pixelSize.small
+                            color: Appearance.colors.colOnLayer2
+                        }
+                    }
+                }
+            }
         }
         Repeater {
             model: root.entries

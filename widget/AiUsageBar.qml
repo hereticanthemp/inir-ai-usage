@@ -15,9 +15,13 @@ MouseArea {
     property int clockTick: 0
 
     readonly property var entries: (report.entries ?? []).filter(e => e.status === "ready" || (e.metrics ?? []).length > 0)
+    readonly property string preferredProvider: Config.options?.sidebar?.widgets?.aiUsageTopBarProvider ?? ""
     readonly property var headlineEntry: {
+        const candidates = preferredProvider.length > 0
+            ? entries.filter(entry => (entry.id ?? entry.name) === preferredProvider)
+            : entries
         let best = null
-        for (const entry of entries) {
+        for (const entry of candidates) {
             for (const metric of (entry.metrics ?? [])) {
                 if (metric.percent === undefined || metric.percent === null) continue
                 if (!best || Number(metric.percent) > Number(best.metric.percent)) best = ({ entry, metric })
